@@ -37,7 +37,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 	try {
 		const { homeTeam, awayTeam, winner, homeScore, awayScore, date } = await request.json()
 
-		const newMatch = await prisma.match.create({
+		await prisma.match.create({
 			data: {
 				homeTeamId : homeTeam,
 				awayTeamId : awayTeam,
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 			},
 		})
 
-		return NextResponse.json(newMatch, { status: 201 })
+		return NextResponse.json({ message: "Match créé" }, { status: 201 })
 	} catch (error: any) {
 		logger.error(error)
 

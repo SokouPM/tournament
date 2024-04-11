@@ -8,7 +8,7 @@ import Header from "@/components/header"
 export const metadata: Metadata = {
 	title: {
 		template: "%s | TourNament",
-		default: "Accueil | TourNament",
+		default: "TourNament",
 	},
 	description: "TourNament est une application de gestion de tournois d'équipes",
 	icons: { icon: "/favicon.ico" },

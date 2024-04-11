@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { IoInformationCircleOutline } from "react-icons/io5"
 import { MdDelete, MdErrorOutline } from "react-icons/md"
+import Swal from "sweetalert2"
 
 interface Match {
 	id: number
@@ -41,7 +42,26 @@ export default function TeamsList() {
 	const [error, setError] = useState<string | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 
-	async function fetchTeams() {
+	async function deleteMatch(id: number) {
+		try {
+			setLoading(true)
+
+			const response = await fetch(`/api/matches/${id}`, {method: "DELETE"})
+			const data = await response.json()
+
+			if (!response.ok) {
+				setError(data.message)
+
+				return
+			}
+
+			fetchMatches().then()
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	async function fetchMatches() {
 		setLoading(true)
 		
 		try {
@@ -50,13 +70,15 @@ export default function TeamsList() {
 			return await response.json()
 		} catch (error: any) {
 			setError(error.message)
+
+			return
 		} finally {
 			setLoading(false)
 		}
 	}
 
 	useEffect(() => {
-		fetchTeams().then((response) => {
+		fetchMatches().then((response) => {
 			setMatches(response)
 		})
 	}, [])
@@ -131,10 +153,32 @@ export default function TeamsList() {
 								<td></td>
 							)}
 							<td className="flex items-center justify-evenly">
-								<Link href={`/matches/${match.id}`} className="btn btn-square btn-primary text-base-100">
+								<Link href={`/matches/${match.id}/edit`} className="btn btn-square btn-primary text-base-100">
 									<FaEdit className="text-xl" />
 								</Link>
-								<button className="btn btn-square btn-error text-base-100">
+								<button
+									className="btn btn-square btn-error text-base-100"
+									onClick={() => {
+										Swal.fire({
+											title: `Êtes-vous sûr de vouloir supprimer le match "${match.id}" ?`,
+											text: "Cette action est irréversible",
+											icon: "warning",
+											showCancelButton: true,
+											confirmButtonText: "Oui",
+											confirmButtonColor: "#d33",
+											cancelButtonText: "Non",
+										}).then((result: any) => {
+											if (result.isConfirmed) {
+												Swal.fire({
+													title: "Supprimé !",
+													text: "L'équipe a bien été supprimée",
+													icon: "success"
+												})
+												deleteMatch(match.id).then()
+											}
+										})
+									}}
+								>
 									<MdDelete className="text-xl" />
 								</button>
 							</td>

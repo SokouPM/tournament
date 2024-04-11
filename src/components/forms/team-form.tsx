@@ -47,9 +47,12 @@ export default function TeamForm() {
 
 			if (!response.ok) {
 				setApiError(data.message)
+
+				return
 			}
 
 			setApiResponse(data.message)
+			setTimeout(() => router.push("/teams"), 2000)
 		} finally {
 			setLoading(false)
 		}
@@ -58,9 +61,7 @@ export default function TeamForm() {
 	const onSubmit: SubmitHandler<Inputs> = (data) => {
 		const { name } = data
 
-		postTeam(name).then(() => (
-			setTimeout(() => router.push("/teams"), 5000)
-		))
+		postTeam(name).then()
 	}
 
 	return (
@@ -91,7 +92,7 @@ export default function TeamForm() {
 					<input
 						type="text"
 						id="name"
-						className={`input input-bordered w-full ${errors.name && "input-bordered input-error text-error"}`}
+						className={`input input-bordered w-full ${errors.name && "input-error text-error"}`}
 						{...register("name")}
 					/>
 					<div className="label">
