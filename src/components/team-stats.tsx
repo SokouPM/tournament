@@ -18,10 +18,12 @@ interface TeamStats {
 
 export default function TeamStatsPage({ params }: { params: { teamId: string } }) {
 	const { teamId } = params
+
 	const [teamStats, setTeamStats] = useState<TeamStats | null>(null)
 	const [error, setError] = useState(null)
 	const [loading, setLoading] = useState(true)
 
+	useEffect(() => {
 	const fetchTeamStats = async (): Promise<void> => {
 		try {
 			setLoading(true)
@@ -44,7 +46,6 @@ export default function TeamStatsPage({ params }: { params: { teamId: string } }
 		}
 	}
 
-	useEffect(() => {
 		fetchTeamStats().then()
 	}, [teamId])
 
